@@ -65,14 +65,16 @@ resource "aws_cloudwatch_metric_alarm" "disk_free_storage_space_too_low" {
   alarm_name          = "${var.prefix}rds-${var.db_instance_id}-lowFreeStorageSpace"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = var.evaluation_period
-  metric_name         = "FreeStorageSpace"
-  namespace           = "AWS/RDS"
-  period              = var.statistic_period
-  statistic           = "Average"
-  threshold           = var.disk_free_storage_space_too_low_threshold
-  alarm_description   = "Average database free storage space is too low and may fill up soon."
-  alarm_actions       = var.actions_alarm
-  ok_actions          = var.actions_ok
+
+  # Here we have a small condition with Free Storage Space (Mb) metrics
+  metric_name       = var.nvmessd == false ? "FreeStorageSpace" : "FreeLocalStorage"
+  namespace         = "AWS/RDS"
+  period            = var.statistic_period
+  statistic         = "Average"
+  threshold         = var.disk_free_storage_space_too_low_threshold
+  alarm_description = "Average database free storage space is too low and may fill up soon."
+  alarm_actions     = var.actions_alarm
+  ok_actions        = var.actions_ok
 
   dimensions = {
     DBInstanceIdentifier = var.db_instance_id

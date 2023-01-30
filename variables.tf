@@ -3,6 +3,12 @@ variable "db_instance_id" {
   description = "RDS Instance ID"
 }
 
+variable "nvmessd" {
+  type        = bool
+  description = "Is DB instance type has NVME SSD. Valid instance types: m5, m6, c5, c6, cc2, hpc6id, r5, r6, x2g, z1d, d3, i3, i4i, im4gn, is4gen, dl1, f1, g4, g5, p3dn, p4d, p4de, trn1"
+  default     = false
+}
+
 variable "prefix" {
   type        = string
   default     = ""
@@ -82,13 +88,13 @@ variable "anomaly_band_width" {
 }
 
 variable "actions_alarm" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "A list of actions to take when alarms are triggered. Will likely be an SNS topic for event distribution."
 }
 
 variable "actions_ok" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "A list of actions to take when alarms are cleared. Will likely be an SNS topic for event distribution."
 }
@@ -142,14 +148,14 @@ variable "tags" {
 }
 
 variable "db_instance_class" {
-  type      = string
+  type        = string
   description = "The rds instance class, e.g. db.t3.medium"
 }
 
 variable "engine" {
-  type = string
+  type        = string
   description = "The RDS engine being used. Used for postgres or mysql specific alarms"
-  default = ""
+  default     = ""
 }
 
 variable "maximum_used_transaction_ids_too_high_threshold" {
